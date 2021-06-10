@@ -19,7 +19,6 @@ def mapreduce(results):
     return dataFrame
 
 
-
 '''FUNCIÓ DE L'ETAPA 2, en que cada thread obté del COS el seu fitxer per pre-processar-lo; un cop fet, el passa a tipus DataFrame i el retorna a la funció MAPREDUCE(results)'''
 def data_preprocessing(fitxers, storage):
     parts = fitxers.split(':')
@@ -50,7 +49,6 @@ def data_preprocessing(fitxers, storage):
     return dataF2
     
 
-
 ''' FUNCIÓ DE L'ETAPA 3, en que s'obté el fitxer del COS amb un GET i, cada thread, fa la seva consulta que hi ha en el paràmetre QUERY'''
 def queries(query, storage):
 
@@ -79,7 +77,6 @@ def queries(query, storage):
     return(result)
 
 
-
 ''' FUNCIÓ en que passant-li per paràmetre VALUES, escriu el valor absolut en els gràfics PIE '''
 def make_autopct(values):
     def my_autopct(pct):
@@ -87,7 +84,6 @@ def make_autopct(values):
         val = int(round(pct*total/100.0))
         return'{v:d}'.format(p=pct,v=val)
     return my_autopct
-
 
 
 ''' FUNCIÓ esquelet per generar els gràfics de format PIE'''
@@ -102,7 +98,6 @@ def pie_plot(index, xlabel, ylabel, title):
     plt.savefig("plot_"+ylabel+".png")
 
 
-
 ''' FUNCIÓ esquelet per generar els gràfics de format BAR'''
 def bar_plot(index, xlabel, ylabel, title):
     result_centres = result[index]
@@ -115,7 +110,6 @@ def bar_plot(index, xlabel, ylabel, title):
     plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.7)
     plt.suptitle(title, fontsize=14, fontweight='bold')
     plt.savefig("plot_"+ylabel+".png")
-
 
 
 ''' FUNCIÓ esquelet per generar els gràfics de DISPERSIÓ'''
@@ -134,7 +128,6 @@ def dispersio_plot(index, xlabel, ylabel, title):
 
 
 
-
 if __name__ == "__main__":
     
     fexec = lithops.FunctionExecutor(runtime='sd202021/lithops-custom-runtime-3.8:0.5')
@@ -144,7 +137,6 @@ if __name__ == "__main__":
 
 
     '''--------- FASE 2: DATA PREPROCESSING ---------''' 
-
     fitxers = [
 'territori_ambiental.csv:COMARCA:TIPUS_COMARCA:SUPERFICIE',
 'demografia.csv:HABITANTS:DENSITAT:POBLACIO_ESTRANGERA',
@@ -163,7 +155,6 @@ if __name__ == "__main__":
 
 
     '''--------- FASE 3: QUERIES ---------'''
-
     iterdata = [
 'SELECT dataF.COMARCA AS COMARCA, dataF.CENTRES AS CENTRES FROM dataF GROUP BY dataF.COMARCA ORDER BY dataF.CENTRES DESC LIMIT 6:CENTRES', 
 
@@ -183,7 +174,6 @@ if __name__ == "__main__":
 
 'SELECT dataF.TIPUS_COMARCA AS TIPUS_COMARCA, COUNT(dataF.TIPUS_COMARCA) AS COUNT_TIPUS_C FROM dataF GROUP BY dataF.TIPUS_COMARCA:PIB'
 ]
-
     fexec.map(queries, iterdata)
     result = fexec.get_result()
 
